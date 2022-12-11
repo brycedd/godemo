@@ -2,5 +2,6 @@ package main
 
 func main() {
 	//baseDemo()
-	concurrent()
+	//concurrent()
+	concurrent2()
 }
