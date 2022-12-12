@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -11,15 +12,25 @@ func concurrent2() {
 	jobChan := make(chan *Job, 128)
 	resultChan := make(chan *Result, 128)
 	stop := make(chan struct{})
-	createPoll(50, jobChan, resultChan, stop)
-	go func(resultChan chan *Result) {
+	w := sync.WaitGroup{}
+	senderNum := 10
+	jobNum := 100
+	w.Add(1)
+	createPoll(senderNum, jobChan, resultChan, stop)
+	go func(resultChan chan *Result, jobChan chan *Job, w *sync.WaitGroup) {
+		defer w.Done()
+		stop := 0
 		for result := range resultChan {
 			fmt.Printf("job id:%v name:%s randum:%v result:%d\n",
 				result.job.Id, result.goroutineName, result.job.RandNum, result.sum)
+			stop++
+			if stop == jobNum {
+				return
+			}
 		}
-	}(resultChan)
+	}(resultChan, jobChan, &w)
 	var id int
-	for id < 10000 {
+	for id < jobNum {
 		id++
 		rNum := rand.Int()
 		job := &Job{
@@ -28,8 +39,8 @@ func concurrent2() {
 		}
 		jobChan <- job
 	}
+	w.Wait()
 	fmt.Println("end: ", time.Now().Sub(now))
-	time.Sleep(time.Second * 3)
 }
 
 func createPoll(num int, jobChan chan *Job, resultChan chan *Result, stop chan struct{}) {
