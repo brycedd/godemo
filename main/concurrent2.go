@@ -11,24 +11,18 @@ func concurrent2() {
 	now := time.Now()
 	jobChan := make(chan *Job, 128)
 	resultChan := make(chan *Result, 128)
-	stop := make(chan struct{})
 	w := sync.WaitGroup{}
 	senderNum := 10
 	jobNum := 100
-	w.Add(1)
-	createPoll(senderNum, jobChan, resultChan, stop)
-	go func(resultChan chan *Result, jobChan chan *Job, w *sync.WaitGroup) {
-		defer w.Done()
-		stop := 0
+	w.Add(jobNum)
+	createPoll(senderNum, jobChan, resultChan)
+	go func(resultChan chan *Result, jobChan chan *Job) {
 		for result := range resultChan {
 			fmt.Printf("job id:%v name:%s randum:%v result:%d\n",
 				result.job.Id, result.goroutineName, result.job.RandNum, result.sum)
-			stop++
-			if stop == jobNum {
-				return
-			}
+			w.Done()
 		}
-	}(resultChan, jobChan, &w)
+	}(resultChan, jobChan)
 	var id int
 	for id < jobNum {
 		id++
@@ -39,14 +33,15 @@ func concurrent2() {
 		}
 		jobChan <- job
 	}
+	fmt.Println("waiting...")
 	w.Wait()
 	fmt.Println("end: ", time.Now().Sub(now))
 }
 
-func createPoll(num int, jobChan chan *Job, resultChan chan *Result, stop chan struct{}) {
+func createPoll(num int, jobChan chan *Job, resultChan chan *Result) {
 	for i := 0; i < num; i++ {
 		namId := i + 1
-		go func(jobChan chan *Job, resultChan chan *Result, stop chan struct{}) {
+		go func(jobChan chan *Job, resultChan chan *Result) {
 			goroutineName := fmt.Sprintf("%s:%d", "name", namId)
 			for job := range jobChan {
 				rNum := job.RandNum
@@ -56,7 +51,7 @@ func createPoll(num int, jobChan chan *Job, resultChan chan *Result, stop chan s
 					Build()
 				resultChan <- rr
 			}
-		}(jobChan, resultChan, stop)
+		}(jobChan, resultChan)
 	}
 }
 
