@@ -3,7 +3,7 @@ package main
 func main() {
 	//baseDemo()
 	//concurrent()
-	concurrent2()
+	//concurrent2()
 	//DeferDemo()
-	//channelDemo()
+	channelDemo()
 }
