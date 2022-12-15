@@ -22,18 +22,18 @@ func blockTest() {
 		for i := 0; i < 10; i++ {
 			c1 <- i
 		}
-		//close(c1)
-		//fmt.Println("c1 closed...")
-		fmt.Println("c1 发送结束，但并未手动关闭")
-		time.Sleep(time.Second * 3)
-		fmt.Println("c1 goroutine 结束休眠")
+		close(c1)
+		fmt.Println("c1 closed...")
+		//fmt.Println("c1 发送结束，但并未手动关闭")
+		//time.Sleep(time.Second * 3)
+		//fmt.Println("c1 goroutine 结束休眠")
 	}()
 	go func() {
 		defer w.Done() // c1 未被关闭，不会跳出range，导致这一行永远阻塞，直到main goroutine结束
 		for v := range c1 {
 			fmt.Println("读取到：", v)
 		}
-		fmt.Println("退出了for range...")
+		fmt.Println("退出了 for range...")
 	}()
 	w.Wait()
 	fmt.Println("main done")
