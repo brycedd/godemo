@@ -55,7 +55,6 @@ func QuickSortDemo(arr []int) []int {
 	// 开始通过递归分别再对各个分区进行排序
 	low = QuickSortDemo(low)
 	high = QuickSortDemo(high)
-
 	// 开始收集每次递归结果
 	result := append(append(low, mid...), high...)
 	return result
