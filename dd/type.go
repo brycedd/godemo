@@ -6,6 +6,11 @@ import (
 	"math"
 )
 
+type Node struct {
+	Value int
+	Next  *Node
+}
+
 type Point struct {
 	X, Y float64
 }
