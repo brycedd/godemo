@@ -71,7 +71,7 @@ func (s Superman2) Print() {
 	fmt.Printf("persion: %p, superman: %v\n", &s.Person2, s)
 }
 
-// =============>
+// Animal =============>
 type Animal interface {
 	Sleeping()
 	Eating()
