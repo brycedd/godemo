@@ -1,12 +1,9 @@
 package algorithm
 
-import "fmt"
-
-func quickSort(arr []int) {
+func quickSort(arr []int) []int {
 	// arr := []int{2, 5, 2, 1, 3, 7, 4, 5, 5, 6, 9,  0}
 	//              0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-	sort := QuickSortDemo2(arr)
-	fmt.Println(sort)
+	return QuickSortDemo2(arr)
 }
 
 func QuickSort(arr []int) []int {
