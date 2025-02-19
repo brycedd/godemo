@@ -9,9 +9,9 @@ func Algorithm() {
 	//arr := []int{3, 2}
 	fmt.Println("before:", arr)
 	var result []int
-	//result = quickSort(arr)
+	result = quickSort(arr)
 	//result = BubbleSort(arr)
-	result = InsertionSort(arr)
+	//result = InsertionSort(arr)
 	//result = MergeSort(arr)
 	//result = SelectionSort(arr)
 	//result = HeapSort(arr)
